@@ -31,15 +31,17 @@ export async function POST(request: Request) {
       const extension = path.extname(resume.name).toLowerCase();
       await writeFile(path.join(storageDirectory, `resume${extension}`), Buffer.from(await resume.arrayBuffer()));
     }
-    await writeFile(path.join(storageDirectory, "application.json"), JSON.stringify({
+    const application = {
       id, receivedAt: new Date().toISOString(), role,
       firstName: String(form.get("firstName")), lastName: String(form.get("lastName")), email: String(form.get("email")),
-      portfolio: String(form.get("portfolio") ?? ""), linkedin: String(form.get("linkedin") ?? ""), message: String(form.get("message")),
+      portfolio: String(form.get("portfolio") ?? ""), linkedin: String(form.get("linkedin") ?? ""), message: String(form.get("message") ?? ""),
       cityState: String(form.get("cityState") ?? ""), internetProvider: String(form.get("internetProvider") ?? ""),
       downloadSpeed: String(form.get("downloadSpeed") ?? ""), uploadSpeed: String(form.get("uploadSpeed") ?? ""),
       secureLocation: String(form.get("secureLocation") ?? ""), availability: String(form.get("availability") ?? ""),
       remoteAccessConsent: String(form.get("remoteAccessConsent") ?? ""), resumeOriginalName: hasResume ? resume.name : "",
-    }, null, 2));
+    };
+    await writeFile(path.join(storageDirectory, "application.json"), JSON.stringify(application, null, 2));
+
     return NextResponse.json({ ok: true, applicationId: id }, { status: 201 });
   } catch (error) {
     console.error("Application submission failed", error);
