@@ -25,7 +25,7 @@ model Application {
   message            String?
   resumeOriginalName String?  @map("resume_original_name")
   consent            Boolean  @default(true)
-  status             String   @default("new")
+  status             String   @default("unread")
 
   @@index([receivedAt])
   @@index([email])

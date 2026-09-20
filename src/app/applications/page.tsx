@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { updateApplicationStatus } from "./actions";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -31,8 +32,13 @@ type ApplicationRecord = {
   status: string;
 };
 
-async function getApplications(): Promise<ApplicationRecord[]> {
-  return prisma.application.findMany({ orderBy: { receivedAt: "desc" } });
+type StatusFilter = "all" | "unread" | "read";
+
+async function getApplications(status: StatusFilter): Promise<ApplicationRecord[]> {
+  return prisma.application.findMany({
+    where: status === "all" ? undefined : { status },
+    orderBy: { receivedAt: "desc" },
+  });
 }
 
 function formatDate(value: Date | string) {
@@ -46,8 +52,15 @@ function DetailRow({ label, value, href }: { label: string; value?: string | num
   return <div className="application-detail-row"><dt>{label}</dt><dd>{href ? <a href={href}>{value}</a> : value}</dd></div>;
 }
 
-export default async function ApplicationsPage() {
-  const applications = await getApplications();
+export default async function ApplicationsPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
+  const requestedStatus = (await searchParams).status;
+  const activeStatus: StatusFilter = requestedStatus === "unread" || requestedStatus === "read" ? requestedStatus : "all";
+  const [applications, totalCount, unreadCount, readCount] = await Promise.all([
+    getApplications(activeStatus),
+    prisma.application.count(),
+    prisma.application.count({ where: { status: "unread" } }),
+    prisma.application.count({ where: { status: "read" } }),
+  ]);
   const latestDate = applications[0]?.receivedAt ? formatDate(applications[0].receivedAt) : "No submissions yet";
 
   return (
@@ -61,8 +74,14 @@ export default async function ApplicationsPage() {
       <main className="applications-main">
         <section className="applications-heading">
           <div><p>Recruitment · Submissions</p><h1>Applications</h1><span>Review the application data received through the careers form.</span></div>
-          <div className="applications-summary"><div><span>Total applications</span><strong>{applications.length.toString().padStart(2, "0")}</strong></div><div><span>Latest submission</span><strong>{latestDate}</strong></div></div>
+          <div className="applications-summary"><div><span>Total applications</span><strong>{totalCount.toString().padStart(2, "0")}</strong></div><div><span>Latest in view</span><strong>{latestDate}</strong></div></div>
         </section>
+
+        <nav className="application-tabs" aria-label="Application status filters">
+          <Link className={activeStatus === "all" ? "active" : ""} href="/applications"><span>All</span><b>{totalCount}</b></Link>
+          <Link className={activeStatus === "unread" ? "active" : ""} href="/applications?status=unread"><span>Unread</span><b>{unreadCount}</b></Link>
+          <Link className={activeStatus === "read" ? "active" : ""} href="/applications?status=read"><span>Marked as read</span><b>{readCount}</b></Link>
+        </nav>
 
         <section className="applications-list" aria-label="Submitted applications">
           <div className="applications-list-head"><span>Applicant</span><span>Location</span><span>Received</span><span>Status</span><span aria-hidden="true" /></div>
@@ -76,11 +95,21 @@ export default async function ApplicationsPage() {
                   <span className="applicant-cell"><i>{application.firstName?.[0]}{application.lastName?.[0]}</i><span><strong>{fullName}</strong><small>{application.email}</small></span></span>
                   <span>{application.cityState || "Not provided"}</span>
                   <span>{formatDate(application.receivedAt)}</span>
-                  <span><b>{application.status}</b></span>
+                  <span><b className={`status-flag status-${application.status}`}>{application.status === "read" ? "Read" : "Unread"}</b></span>
                   <span className="application-chevron">⌄</span>
                 </summary>
                 <div className="application-detail">
-                  <div className="application-detail-top"><div><span>Application details</span><h2>{fullName}</h2></div><a href={`mailto:${application.email}`}>Contact applicant ↗</a></div>
+                  <div className="application-detail-top">
+                    <div><span>Application details</span><h2>{fullName}</h2></div>
+                    <div className="application-detail-actions">
+                      <form action={updateApplicationStatus}>
+                        <input type="hidden" name="id" value={application.id} />
+                        <input type="hidden" name="status" value={application.status === "read" ? "unread" : "read"} />
+                        <button type="submit">Mark as {application.status === "read" ? "unread" : "read"}</button>
+                      </form>
+                      <a href={`mailto:${application.email}`}>Contact applicant ↗</a>
+                    </div>
+                  </div>
                   <dl>
                     <DetailRow label="Email" value={application.email} href={`mailto:${application.email}`} />
                     <DetailRow label="Role" value={application.role} />

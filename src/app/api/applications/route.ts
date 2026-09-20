@@ -51,6 +51,7 @@ export async function POST(request: Request) {
         availability: optionalString(form, "availability"),
         resumeOriginalName: hasResume ? resume.name : null,
         consent: true,
+        status: "unread",
       },
     });
 
