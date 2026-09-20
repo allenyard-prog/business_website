@@ -586,6 +586,7 @@ a:hover .career-arrow:not(.career-arrow-back),button:hover .career-arrow { trans
 .application-tabs a::after { background:#3478f6; }
 .application-tabs b { background:#e7eef8; color:#657792; }
 .application-tabs a.active b { background:#dceaff; color:#2769d7; }
+.application-tabs .unread-tab b,.application-tabs .unread-tab.active b { background:#e5484d; box-shadow:0 5px 12px rgba(229,72,77,.25); color:#fff; }
 .applications-list { border-color:#d9e4f3; box-shadow:0 18px 50px rgba(38,81,148,.08); }
 .applications-list-head { background:#edf4ff; color:#71829a; }
 .application-list-item { border-color:#e1e9f5; }
@@ -625,6 +626,7 @@ a:hover .career-arrow:not(.career-arrow-back),button:hover .career-arrow { trans
 
 .site-header,.career-header { max-width:100%; }
 .hero-copy { max-width:760px; }
+.hero-title { font-size:clamp(2.5rem,4.25vw,4.8rem); }
 .signal-card.hero-media {
   right:var(--content-pad);
   width:min(44vw,660px);
@@ -666,7 +668,7 @@ a:hover .career-arrow:not(.career-arrow-back),button:hover .career-arrow { trans
   }
   .desktop-nav { gap:1.4rem; margin-left:2rem; }
   .hero-copy { max-width:58%; }
-  .hero-title { font-size:clamp(3.5rem,6.6vw,6rem); }
+  .hero-title { font-size:clamp(2.7rem,4.7vw,4.1rem); }
   .signal-card.hero-media { width:min(43vw,520px); }
   .section-heading { grid-template-columns:.45fr 1.55fr .8fr; }
   .services-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
@@ -684,7 +686,7 @@ a:hover .career-arrow:not(.career-arrow-back),button:hover .career-arrow { trans
     padding-top:130px;
   }
   .hero-copy { max-width:820px; width:100%; }
-  .hero-title { font-size:clamp(4.25rem,9.5vw,6.6rem); }
+  .hero-title { font-size:clamp(3rem,6.5vw,4.3rem); }
   .hero-bottom { max-width:760px; }
   .signal-card.hero-media {
     bottom:auto;
@@ -733,7 +735,7 @@ a:hover .career-arrow:not(.career-arrow-back),button:hover .career-arrow { trans
     padding-top:108px;
   }
   .hero-copy { max-width:none; width:100%; }
-  .hero-title { font-size:clamp(3rem,14vw,4.75rem); line-height:.9; }
+  .hero-title { font-size:clamp(2.15rem,9.5vw,3.15rem); line-height:.96; }
   .hero-bottom { align-items:flex-start; flex-direction:column; gap:1.5rem; }
   .hero-intro { max-width:34rem; }
   .signal-card.hero-media {

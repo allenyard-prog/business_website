@@ -54,7 +54,7 @@ function DetailRow({ label, value, href }: { label: string; value?: string | num
 
 export default async function ApplicationsPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const requestedStatus = (await searchParams).status;
-  const activeStatus: StatusFilter = requestedStatus === "unread" || requestedStatus === "read" ? requestedStatus : "all";
+  const activeStatus: StatusFilter = requestedStatus === "all" || requestedStatus === "read" ? requestedStatus : "unread";
   const [applications, totalCount, unreadCount, readCount] = await Promise.all([
     getApplications(activeStatus),
     prisma.application.count(),
@@ -78,8 +78,8 @@ export default async function ApplicationsPage({ searchParams }: { searchParams:
         </section>
 
         <nav className="application-tabs" aria-label="Application status filters">
-          <Link className={activeStatus === "all" ? "active" : ""} href="/applications"><span>All</span><b>{totalCount}</b></Link>
-          <Link className={activeStatus === "unread" ? "active" : ""} href="/applications?status=unread"><span>Unread</span><b>{unreadCount}</b></Link>
+          <Link className={`unread-tab${activeStatus === "unread" ? " active" : ""}`} href="/applications"><span>Unread</span>{unreadCount > 0 && <b aria-label={`${unreadCount} unread applications`}>{unreadCount}</b>}</Link>
+          <Link className={activeStatus === "all" ? "active" : ""} href="/applications?status=all"><span>All</span><b>{totalCount}</b></Link>
           <Link className={activeStatus === "read" ? "active" : ""} href="/applications?status=read"><span>Marked as read</span><b>{readCount}</b></Link>
         </nav>
 
