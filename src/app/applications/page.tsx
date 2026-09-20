@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { readdir, readFile } from "node:fs/promises";
-import path from "node:path";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -14,53 +13,36 @@ export const metadata: Metadata = {
 
 type ApplicationRecord = {
   id: string;
-  receivedAt: string;
+  receivedAt: Date;
   role: string;
   firstName: string;
   lastName: string;
   email: string;
-  cityState?: string;
-  internetProvider?: string;
-  downloadSpeed?: string;
-  uploadSpeed?: string;
-  secureLocation?: string;
-  availability?: string;
-  portfolio?: string;
-  linkedin?: string;
-  message?: string;
-  resumeOriginalName?: string;
+  cityState: string | null;
+  internetProvider: string | null;
+  downloadSpeed: number | null;
+  uploadSpeed: number | null;
+  secureLocation: string | null;
+  availability: string | null;
+  portfolio: string | null;
+  linkedin: string | null;
+  message: string | null;
+  resumeOriginalName: string | null;
+  status: string;
 };
 
 async function getApplications(): Promise<ApplicationRecord[]> {
-  const directory = path.join(process.cwd(), ".data", "applications");
-
-  try {
-    const entries = await readdir(directory, { withFileTypes: true });
-    const applications = await Promise.all(entries.filter((entry) => entry.isDirectory()).map(async (entry) => {
-      try {
-        const content = await readFile(path.join(directory, entry.name, "application.json"), "utf8");
-        return JSON.parse(content) as ApplicationRecord;
-      } catch {
-        return null;
-      }
-    }));
-
-    return applications
-      .filter((application): application is ApplicationRecord => application !== null)
-      .sort((a, b) => new Date(b.receivedAt).getTime() - new Date(a.receivedAt).getTime());
-  } catch {
-    return [];
-  }
+  return prisma.application.findMany({ orderBy: { receivedAt: "desc" } });
 }
 
-function formatDate(value: string) {
+function formatDate(value: Date | string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "Unknown date";
   return new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeStyle: "short", timeZone: "America/Chicago" }).format(date);
 }
 
-function DetailRow({ label, value, href }: { label: string; value?: string; href?: string }) {
-  if (!value) return null;
+function DetailRow({ label, value, href }: { label: string; value?: string | number | null; href?: string }) {
+  if (value === null || value === undefined || value === "") return null;
   return <div className="application-detail-row"><dt>{label}</dt><dd>{href ? <a href={href}>{value}</a> : value}</dd></div>;
 }
 
@@ -78,7 +60,7 @@ export default async function ApplicationsPage() {
 
       <main className="applications-main">
         <section className="applications-heading">
-          <div><p>Recruitment · Submissions</p><h1>Applications</h1><span>Review the application metadata received through the careers form.</span></div>
+          <div><p>Recruitment · Submissions</p><h1>Applications</h1><span>Review the application data received through the careers form.</span></div>
           <div className="applications-summary"><div><span>Total applications</span><strong>{applications.length.toString().padStart(2, "0")}</strong></div><div><span>Latest submission</span><strong>{latestDate}</strong></div></div>
         </section>
 
@@ -94,7 +76,7 @@ export default async function ApplicationsPage() {
                   <span className="applicant-cell"><i>{application.firstName?.[0]}{application.lastName?.[0]}</i><span><strong>{fullName}</strong><small>{application.email}</small></span></span>
                   <span>{application.cityState || "Not provided"}</span>
                   <span>{formatDate(application.receivedAt)}</span>
-                  <span><b>New</b></span>
+                  <span><b>{application.status}</b></span>
                   <span className="application-chevron">⌄</span>
                 </summary>
                 <div className="application-detail">
@@ -108,8 +90,8 @@ export default async function ApplicationsPage() {
                     <DetailRow label="Upload speed" value={application.uploadSpeed ? `${application.uploadSpeed} Mbps` : ""} />
                     <DetailRow label="Secure location" value={application.secureLocation} />
                     <DetailRow label="Availability" value={application.availability} />
-                    <DetailRow label="Portfolio" value={application.portfolio} href={application.portfolio} />
-                    <DetailRow label="LinkedIn" value={application.linkedin} href={application.linkedin} />
+                    <DetailRow label="Portfolio" value={application.portfolio} href={application.portfolio?.startsWith("http") ? application.portfolio : undefined} />
+                    <DetailRow label="LinkedIn" value={application.linkedin} href={application.linkedin?.startsWith("http") ? application.linkedin : undefined} />
                     <DetailRow label="Message" value={application.message} />
                     <DetailRow label="Résumé" value={application.resumeOriginalName} />
                     <DetailRow label="Application ID" value={application.id} />
