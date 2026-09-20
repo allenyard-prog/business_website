@@ -4,7 +4,6 @@ import { useLayoutEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import ApplicationForm from "./ApplicationForm";
 
 const services = [
   { number: "01", title: "Product strategy", description: "Turn fuzzy ideas into a focused roadmap your team can actually ship.", tags: ["Discovery", "Roadmaps", "Validation"], image: "/images/product-workflow.png" },
@@ -165,7 +164,6 @@ export default function Home() {
           </div>
         </section>
 
-        <ApplicationForm />
       </main>
 
       <footer className="footer section-pad">

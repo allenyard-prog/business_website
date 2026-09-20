@@ -604,3 +604,210 @@ a:hover .career-arrow:not(.career-arrow-back),button:hover .career-arrow { trans
 .application-detail-row dd { color:#344b6c; }
 .applications-empty>span { color:#3478f6; }
 .applications-empty p { color:#71829a; }
+
+/* Responsive layout system: desktop, tablet, and mobile */
+:root {
+  --content-max:1440px;
+  --page-gutter:clamp(1.25rem,4vw,4.5rem);
+  --content-pad:max(var(--page-gutter),calc((100vw - var(--content-max)) / 2));
+}
+
+.section-pad,
+.site-header,
+.logo-strip,
+.career-header,
+.career-hero,
+.career-apply,
+.career-footer {
+  padding-left:var(--content-pad);
+  padding-right:var(--content-pad);
+}
+
+.site-header,.career-header { max-width:100%; }
+.hero-copy { max-width:760px; }
+.signal-card.hero-media {
+  right:var(--content-pad);
+  width:min(44vw,660px);
+}
+.hero-media-image { object-position:center 48%; }
+.services-grid,.mascot-grid { gap:clamp(1rem,1.6vw,1.5rem); }
+.service-image { height:clamp(220px,17vw,285px); }
+.service-card:nth-child(1) .service-image img { object-position:center 52%; }
+.service-card:nth-child(2) .service-image img { object-position:center 45%; }
+.service-card:nth-child(3) .service-image img { object-position:center 52%; }
+.case-visual {
+  margin-right:calc(0px - var(--content-pad));
+  min-height:clamp(560px,45vw,720px);
+}
+.case-visual-inner img { object-position:center; }
+.mascot-card:nth-child(1) img { object-position:center 42%; }
+.mascot-card:nth-child(2) img { object-position:center 45%; }
+.mascot-card:nth-child(3) img { object-position:center 42%; }
+.mascot-card:nth-child(4) img { object-position:center 45%; }
+.cta-mascot img { object-position:center 8%; }
+.footer-main,.footer-wordmark,.footer-bottom { max-width:var(--content-max); }
+
+.career-hero-copy { max-width:min(850px,62vw); }
+.career-summary { right:var(--content-pad); width:min(345px,27vw); }
+.career-content {
+  max-width:1200px;
+  margin-inline:auto;
+  width:100%;
+}
+.career-apply { grid-template-columns:minmax(300px,.8fr) minmax(480px,1.2fr); }
+.greenhouse-card { justify-self:end; max-width:820px; width:100%; }
+.applications-header { padding-left:var(--content-pad); padding-right:var(--content-pad); }
+.applications-main { max-width:var(--content-max); padding-left:var(--page-gutter); padding-right:var(--page-gutter); }
+
+@media (max-width:1199px) {
+  :root {
+    --content-max:1100px;
+    --page-gutter:clamp(1.75rem,4vw,3rem);
+  }
+  .desktop-nav { gap:1.4rem; margin-left:2rem; }
+  .hero-copy { max-width:58%; }
+  .hero-title { font-size:clamp(3.5rem,6.6vw,6rem); }
+  .signal-card.hero-media { width:min(43vw,520px); }
+  .section-heading { grid-template-columns:.45fr 1.55fr .8fr; }
+  .services-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .service-card { min-height:560px; }
+  .service-card:last-child { grid-column:1/-1; min-height:470px; }
+  .service-card:last-child .service-image { height:280px; }
+  .career-hero-copy { max-width:62%; }
+}
+
+@media (min-width:768px) and (max-width:980px) {
+  .hero {
+    display:block;
+    min-height:auto;
+    padding-bottom:5rem;
+    padding-top:130px;
+  }
+  .hero-copy { max-width:820px; width:100%; }
+  .hero-title { font-size:clamp(4.25rem,9.5vw,6.6rem); }
+  .hero-bottom { max-width:760px; }
+  .signal-card.hero-media {
+    bottom:auto;
+    left:auto;
+    margin-top:4rem;
+    position:relative;
+    right:auto;
+    top:auto;
+    width:100%;
+  }
+  .services-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .service-card { min-height:520px; }
+  .service-card:last-child { grid-column:1/-1; }
+  .case-visual { margin-left:calc(0px - var(--content-pad)); margin-right:calc(0px - var(--content-pad)); }
+  .process { gap:4rem; grid-template-columns:.75fr 1.25fr; }
+  .career-hero {
+    display:grid;
+    gap:3rem;
+    min-height:auto;
+    padding-bottom:5rem;
+  }
+  .career-hero-copy { max-width:800px; }
+  .career-summary {
+    bottom:auto;
+    left:auto;
+    max-width:800px;
+    position:relative;
+    right:auto;
+    top:auto;
+    width:100%;
+  }
+  .career-apply { grid-template-columns:1fr; }
+  .greenhouse-card { justify-self:stretch; max-width:none; }
+}
+
+@media (max-width:767px) {
+  :root {
+    --content-max:100%;
+    --page-gutter:1.25rem;
+  }
+  .site-header { height:72px; }
+  .hero {
+    display:block;
+    min-height:auto;
+    padding-bottom:4rem;
+    padding-top:108px;
+  }
+  .hero-copy { max-width:none; width:100%; }
+  .hero-title { font-size:clamp(3rem,14vw,4.75rem); line-height:.9; }
+  .hero-bottom { align-items:flex-start; flex-direction:column; gap:1.5rem; }
+  .hero-intro { max-width:34rem; }
+  .signal-card.hero-media {
+    aspect-ratio:4/3;
+    bottom:auto;
+    left:auto;
+    margin-top:2.75rem;
+    position:relative;
+    right:auto;
+    top:auto;
+    width:100%;
+  }
+  .hero-media-image { object-position:52% center; }
+  .hero-media-badge { bottom:.7rem; left:.7rem; right:.7rem; }
+  .orb-one { right:-35%; top:32%; }
+  .logo-strip { overflow:hidden; }
+  .logo-row { gap:1.25rem; }
+  .section-heading,.mascot-heading { gap:0; }
+  .section-lede { max-width:34rem; }
+  .services-grid { grid-template-columns:1fr; }
+  .service-card,.service-card:last-child { grid-column:auto; min-height:auto; }
+  .service-card:last-child .service-image,.service-image { height:auto; aspect-ratio:16/10; }
+  .service-card h3 { font-size:1.75rem; }
+  .case-content { padding-right:0; }
+  .case-visual {
+    border-radius:22px;
+    margin:0;
+    min-height:auto;
+    aspect-ratio:4/5;
+  }
+  .case-visual-inner { height:110%; margin:0; width:100%; }
+  .floating-note { bottom:.75rem; right:.75rem; }
+  .process { gap:0; }
+  .process-list { margin-top:3rem; }
+  .process-item { min-height:auto; padding:1.6rem 0; }
+  .mascot-card { aspect-ratio:4/3; }
+  .mascot-card img { object-position:center 38%; }
+  .quote-section blockquote { font-size:clamp(1.8rem,8vw,2.4rem); }
+  .cta-section { gap:3.25rem; }
+  .cta-section h2 { font-size:clamp(3rem,13vw,4rem); }
+  .cta-visual-card { width:min(100%,520px); }
+  .footer-wordmark { font-size:20.5vw; }
+
+  .career-header { position:absolute; }
+  .career-hero {
+    display:grid;
+    gap:2.5rem;
+    min-height:auto;
+    padding-bottom:4rem;
+    padding-top:104px;
+  }
+  .career-hero-copy { max-width:none; }
+  .career-hero h1 { font-size:clamp(3.35rem,15.2vw,5rem); }
+  .career-summary {
+    bottom:auto;
+    left:auto;
+    position:relative;
+    right:auto;
+    top:auto;
+    width:100%;
+  }
+  .career-summary dl { grid-template-columns:1fr; }
+  .career-content { padding-left:var(--page-gutter); padding-right:var(--page-gutter); }
+  .career-description h2 { font-size:clamp(2.6rem,12vw,3.35rem); }
+  .career-apply { grid-template-columns:1fr; }
+  .career-apply-intro h2 { font-size:clamp(3.25rem,14vw,4.25rem); }
+  .greenhouse-card { border-radius:18px; margin:0; }
+  .application-process { flex-wrap:wrap; }
+  .career-footer { min-height:auto; }
+
+  .applications-header { min-height:70px; }
+  .applications-main { padding-bottom:4rem; }
+  .applications-heading h1 { font-size:clamp(3.5rem,17vw,4.5rem); }
+  .applications-summary { width:100%; }
+  .applications-list { border-radius:10px; }
+  .application-list-item summary { grid-template-columns:minmax(0,1fr) 84px 18px; }
+}
