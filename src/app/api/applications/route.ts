@@ -25,6 +25,9 @@ export async function POST(request: Request) {
     }
     const role = String(form.get("role") || "General application");
     const isHostingRole = role.startsWith("U.S.-Based Hosting");
+    if (isHostingRole && (!String(form.get("fullAddress") ?? "").trim() || !String(form.get("phone") ?? "").trim())) {
+      return NextResponse.json({ error: "Please provide your full address and phone number." }, { status: 400 });
+    }
     if (!isHostingRole && !String(form.get("message") ?? "").trim()) {
       return NextResponse.json({ error: "Please complete all required fields." }, { status: 400 });
     }
@@ -43,7 +46,8 @@ export async function POST(request: Request) {
         portfolio: optionalString(form, "portfolio"),
         linkedin: optionalString(form, "linkedin"),
         message: optionalString(form, "message"),
-        cityState: optionalString(form, "cityState"),
+        fullAddress: optionalString(form, "fullAddress"),
+        phone: optionalString(form, "phone"),
         internetProvider: optionalString(form, "internetProvider"),
         downloadSpeed: optionalInteger(form, "downloadSpeed"),
         uploadSpeed: optionalInteger(form, "uploadSpeed"),

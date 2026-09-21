@@ -14,7 +14,8 @@ model Application {
   firstName          String   @map("first_name")
   lastName           String   @map("last_name")
   email              String
-  cityState          String?  @map("city_state")
+  fullAddress        String?  @map("full_address")
+  phone              String?
   internetProvider   String?  @map("internet_provider")
   downloadSpeed      Int?     @map("download_speed")
   uploadSpeed        Int?     @map("upload_speed")

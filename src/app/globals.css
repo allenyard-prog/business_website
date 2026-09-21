@@ -592,6 +592,7 @@ a:hover .career-arrow:not(.career-arrow-back),button:hover .career-arrow { trans
 .application-list-item { border-color:#e1e9f5; }
 .application-list-item summary:hover { background:#f7faff; }
 .application-list-item summary>span:not(.applicant-cell,.application-chevron) { color:#657792; }
+.application-list-item summary>span:nth-child(2) { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .application-list-item summary>span .status-flag { background:#e6efff; color:#2865c7; }
 .application-list-item summary>span .status-read { background:#edf1f6; color:#718096; }
 .applicant-cell small,.application-chevron { color:#8090a6; }
@@ -605,6 +606,21 @@ a:hover .career-arrow:not(.career-arrow-back),button:hover .career-arrow { trans
 .application-detail-row dd { color:#344b6c; }
 .applications-empty>span { color:#3478f6; }
 .applications-empty p { color:#71829a; }
+
+.application-delete-trigger { background:#fff!important; border:1px solid #efc5c7!important; color:#c9343a!important; }
+.application-delete-trigger:hover { background:#fff2f2!important; }
+.application-delete-backdrop { align-items:center; background:rgba(5,18,39,.58); backdrop-filter:blur(8px); display:flex; inset:0; justify-content:center; padding:1.25rem; position:fixed; z-index:100; }
+.application-delete-dialog { background:#fff; border:1px solid #e1e9f5; border-radius:22px; box-shadow:0 32px 90px rgba(5,18,39,.3); max-width:470px; padding:2rem; width:100%; }
+.application-delete-icon { align-items:center; background:#fff0f0; border-radius:50%; color:#d33b41; display:flex; font-size:1.1rem; font-weight:800; height:48px; justify-content:center; margin-bottom:1.5rem; width:48px; }
+.application-delete-dialog>p:first-of-type { color:#d33b41; font-size:.58rem; font-weight:800; letter-spacing:.12em; margin:0 0 .6rem; text-transform:uppercase; }
+.application-delete-dialog h3 { color:#0b1d3a; font-size:1.8rem; letter-spacing:-.045em; margin:0; }
+.application-delete-dialog>p:last-of-type { color:#657792; font-size:.78rem; line-height:1.65; margin:1rem 0 1.75rem; }
+.application-delete-actions { display:flex; gap:.65rem; justify-content:flex-end; }
+.application-delete-actions form { margin:0; }
+.application-delete-actions button { border-radius:99px; cursor:pointer; font-size:.66rem; font-weight:750; min-height:42px; padding:.7rem 1rem; }
+.application-delete-actions>button { background:#fff; border:1px solid #cbd9ec; color:#536985; }
+.application-delete-actions form button { background:#d83b40; border:1px solid #d83b40; color:#fff; }
+.application-delete-actions form button:hover { background:#b92e33; }
 
 /* Responsive layout system: desktop, tablet, and mobile */
 :root {
@@ -812,4 +828,7 @@ a:hover .career-arrow:not(.career-arrow-back),button:hover .career-arrow { trans
   .applications-summary { width:100%; }
   .applications-list { border-radius:10px; }
   .application-list-item summary { grid-template-columns:minmax(0,1fr) 84px 18px; }
+  .application-delete-dialog { border-radius:18px; padding:1.4rem; }
+  .application-delete-actions { align-items:stretch; flex-direction:column-reverse; }
+  .application-delete-actions form,.application-delete-actions button { width:100%; }
 }

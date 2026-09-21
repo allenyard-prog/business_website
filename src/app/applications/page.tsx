@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { updateApplicationStatus } from "./actions";
+import DeleteApplicationButton from "./DeleteApplicationButton";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -19,7 +20,8 @@ type ApplicationRecord = {
   firstName: string;
   lastName: string;
   email: string;
-  cityState: string | null;
+  fullAddress: string | null;
+  phone: string | null;
   internetProvider: string | null;
   downloadSpeed: number | null;
   uploadSpeed: number | null;
@@ -93,7 +95,7 @@ export default async function ApplicationsPage({ searchParams }: { searchParams:
               <details className="application-list-item" key={application.id} open={index === 0}>
                 <summary>
                   <span className="applicant-cell"><i>{application.firstName?.[0]}{application.lastName?.[0]}</i><span><strong>{fullName}</strong><small>{application.email}</small></span></span>
-                  <span>{application.cityState || "Not provided"}</span>
+                  <span>{application.fullAddress || "Not provided"}</span>
                   <span>{formatDate(application.receivedAt)}</span>
                   <span><b className={`status-flag status-${application.status}`}>{application.status === "read" ? "Read" : "Unread"}</b></span>
                   <span className="application-chevron">⌄</span>
@@ -107,13 +109,15 @@ export default async function ApplicationsPage({ searchParams }: { searchParams:
                         <input type="hidden" name="status" value={application.status === "read" ? "unread" : "read"} />
                         <button type="submit">Mark as {application.status === "read" ? "unread" : "read"}</button>
                       </form>
+                      <DeleteApplicationButton id={application.id} applicantName={fullName} />
                       <a href={`mailto:${application.email}`}>Contact applicant ↗</a>
                     </div>
                   </div>
                   <dl>
                     <DetailRow label="Email" value={application.email} href={`mailto:${application.email}`} />
                     <DetailRow label="Role" value={application.role} />
-                    <DetailRow label="City and state" value={application.cityState} />
+                    <DetailRow label="Full address" value={application.fullAddress} />
+                    <DetailRow label="Phone number" value={application.phone} href={application.phone ? `tel:${application.phone}` : undefined} />
                     <DetailRow label="Internet provider" value={application.internetProvider} />
                     <DetailRow label="Download speed" value={application.downloadSpeed ? `${application.downloadSpeed} Mbps` : ""} />
                     <DetailRow label="Upload speed" value={application.uploadSpeed ? `${application.uploadSpeed} Mbps` : ""} />

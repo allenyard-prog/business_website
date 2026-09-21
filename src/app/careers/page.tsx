@@ -115,7 +115,8 @@ export default function CareersPage() {
                 <div className="greenhouse-heading"><div><span>Application form</span><h3>Your information</h3></div><b>Required fields *</b></div>
                 <div className="greenhouse-row"><label>First name *<input name="firstName" autoComplete="given-name" required /></label><label>Last name *<input name="lastName" autoComplete="family-name" required /></label></div>
                 <label>Email address *<input type="email" name="email" autoComplete="email" required /></label>
-                <label>City and state <span>Optional</span><input name="cityState" placeholder="Austin, Texas" /></label>
+                <label>Full address *<input name="fullAddress" autoComplete="street-address" maxLength={300} placeholder="Street address, city, state, ZIP code" required /></label>
+                <label>Phone number *<input type="tel" name="phone" autoComplete="tel" inputMode="tel" maxLength={30} placeholder="(555) 123-4567" required /></label>
                 <div className="greenhouse-divider"><span>Your setup</span></div>
                 <label>Internet provider <span>Optional</span><input name="internetProvider" placeholder="Provider name" /></label>
                 <div className="greenhouse-row"><label>Typical download speed <span>Optional</span><div className="speed-input"><input type="number" name="downloadSpeed" min="0" /><span>Mbps</span></div></label><label>Typical upload speed <span>Optional</span><div className="speed-input"><input type="number" name="uploadSpeed" min="0" /><span>Mbps</span></div></label></div>

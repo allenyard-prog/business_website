@@ -12,3 +12,12 @@ export async function updateApplicationStatus(formData: FormData) {
   await prisma.application.update({ where: { id }, data: { status } });
   revalidatePath("/applications");
 }
+
+export async function deleteApplication(formData: FormData) {
+  const id = String(formData.get("id") ?? "");
+
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return;
+
+  await prisma.application.delete({ where: { id } });
+  revalidatePath("/applications");
+}
