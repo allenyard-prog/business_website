@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { updateApplicationStatus } from "./actions";
-import DeleteApplicationButton from "./DeleteApplicationButton";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -109,7 +108,6 @@ export default async function ApplicationsPage({ searchParams }: { searchParams:
                         <input type="hidden" name="status" value={application.status === "read" ? "unread" : "read"} />
                         <button type="submit">Mark as {application.status === "read" ? "unread" : "read"}</button>
                       </form>
-                      <DeleteApplicationButton id={application.id} applicantName={fullName} />
                       <a href={`mailto:${application.email}`}>Contact applicant ↗</a>
                     </div>
                   </div>
