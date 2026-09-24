@@ -23,23 +23,24 @@ export async function POST(request: Request) {
     for (const field of ["firstName", "lastName", "email", "consent"]) {
       if (!String(form.get(field) ?? "").trim()) return NextResponse.json({ error: "Please complete all required fields." }, { status: 400 });
     }
-    const role = String(form.get("role") || "General application");
-    const isHostingRole = role.startsWith("U.S.-Based Hosting");
-    if (isHostingRole && (!String(form.get("fullAddress") ?? "").trim() || !String(form.get("phone") ?? "").trim())) {
-      return NextResponse.json({ error: "Please provide your full address and phone number." }, { status: 400 });
-    }
-    if (!isHostingRole && !String(form.get("message") ?? "").trim()) {
-      return NextResponse.json({ error: "Please complete all required fields." }, { status: 400 });
-    }
+    const jobId = String(form.get("jobId") ?? "");
+    if (!/^[0-9a-f-]{36}$/i.test(jobId)) return NextResponse.json({ error: "Please select a valid position." }, { status: 400 });
+    const job = await prisma.job.findUnique({ where: { id: jobId } });
+    if (!job || job.status !== "published" || !job.applicationOpen) return NextResponse.json({ error: "This position is not currently accepting applications." }, { status: 409 });
+    if (job.requireAddress && !String(form.get("fullAddress") ?? "").trim()) return NextResponse.json({ error: "Please provide your full address." }, { status: 400 });
+    if (job.requirePhone && !String(form.get("phone") ?? "").trim()) return NextResponse.json({ error: "Please provide your phone number." }, { status: 400 });
+    if (job.requireMessage && !String(form.get("message") ?? "").trim()) return NextResponse.json({ error: "Please tell us why you are interested in this role." }, { status: 400 });
     const resume = form.get("resume");
     const hasResume = resume instanceof File && resume.size > 0;
-    if (!isHostingRole && !hasResume) return NextResponse.json({ error: "Please attach your résumé." }, { status: 400 });
+    if (job.requireResume && !hasResume) return NextResponse.json({ error: "Please attach your résumé." }, { status: 400 });
     if (hasResume && resume.size > 5 * 1024 * 1024) return NextResponse.json({ error: "Your résumé must be smaller than 5MB." }, { status: 413 });
     if (hasResume && !allowedResumeTypes.has(resume.type)) return NextResponse.json({ error: "Please upload a PDF, DOC, or DOCX file." }, { status: 415 });
 
     const application = await prisma.application.create({
       data: {
-        role,
+        role: job.title,
+        jobId: job.id,
+        jobTitleSnapshot: job.title,
         firstName: String(form.get("firstName")).trim(),
         lastName: String(form.get("lastName")).trim(),
         email: String(form.get("email")).trim().toLowerCase(),
@@ -55,6 +56,8 @@ export async function POST(request: Request) {
         availability: optionalString(form, "availability"),
         resumeOriginalName: hasResume ? resume.name : null,
         consent: true,
+        consentedAt: new Date(),
+        consentVersion: "2026-09",
         status: "unread",
       },
     });

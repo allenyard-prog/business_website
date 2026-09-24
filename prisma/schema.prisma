@@ -27,8 +27,95 @@ model Application {
   resumeOriginalName String?  @map("resume_original_name")
   consent            Boolean  @default(true)
   status             String   @default("unread")
+  jobId              String   @map("job_id") @db.Uuid
+  jobTitleSnapshot   String   @map("job_title_snapshot")
+  consentedAt        DateTime @default(now()) @map("consented_at") @db.Timestamptz(6)
+  consentVersion     String   @default("2026-09") @map("consent_version")
+  updatedAt          DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  archivedAt         DateTime? @map("archived_at") @db.Timestamptz(6)
+  job                 Job      @relation(fields: [jobId], references: [id], onDelete: Restrict)
+  notes               ApplicationNote[]
 
   @@index([receivedAt])
   @@index([email])
+  @@index([jobId, status])
   @@map("applications")
+}
+
+model Job {
+  id                    String   @id @default(uuid()) @db.Uuid
+  title                 String
+  slug                  String   @unique
+  team                  String
+  summary               String
+  description           String
+  responsibilities      String
+  requirements          String
+  location              String
+  workplaceType         String   @map("workplace_type")
+  employmentType        String   @map("employment_type")
+  compensation          String?
+  status                String   @default("draft")
+  applicationOpen       Boolean  @default(false) @map("application_open")
+  displayOrder          Int      @default(0) @map("display_order")
+  requireResume         Boolean  @default(true) @map("require_resume")
+  requireAddress        Boolean  @default(false) @map("require_address")
+  requirePhone          Boolean  @default(false) @map("require_phone")
+  requireMessage        Boolean  @default(true) @map("require_message")
+  collectHostingDetails Boolean  @default(false) @map("collect_hosting_details")
+  publishedAt           DateTime? @map("published_at") @db.Timestamptz(6)
+  createdAt             DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  applications          Application[]
+
+  @@index([status, applicationOpen, displayOrder])
+  @@map("jobs")
+}
+
+model ApplicationNote {
+  id            String      @id @default(uuid()) @db.Uuid
+  applicationId String      @map("application_id") @db.Uuid
+  body          String
+  createdBy     String      @default("admin") @map("created_by")
+  createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime    @updatedAt @map("updated_at") @db.Timestamptz(6)
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId, createdAt])
+  @@map("application_notes")
+}
+
+model ResourceType {
+  id           String     @id @default(uuid()) @db.Uuid
+  name         String
+  slug         String     @unique
+  description  String?
+  displayOrder Int        @default(0) @map("display_order")
+  status       String     @default("active")
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime   @updatedAt @map("updated_at") @db.Timestamptz(6)
+  resources    Resource[]
+
+  @@index([status, displayOrder])
+  @@map("resource_types")
+}
+
+model Resource {
+  id             String       @id @default(uuid()) @db.Uuid
+  resourceTypeId String       @map("resource_type_id") @db.Uuid
+  title          String
+  slug           String       @unique
+  summary        String
+  body           String
+  externalUrl    String?      @map("external_url")
+  coverImageUrl  String?      @map("cover_image_url")
+  status         String       @default("draft")
+  displayOrder   Int          @default(0) @map("display_order")
+  publishedAt    DateTime?    @map("published_at") @db.Timestamptz(6)
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+  resourceType   ResourceType @relation(fields: [resourceTypeId], references: [id], onDelete: Restrict)
+
+  @@index([resourceTypeId, status, displayOrder])
+  @@map("resources")
 }

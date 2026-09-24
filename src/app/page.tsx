@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -69,7 +70,7 @@ export default function Home() {
     <div ref={page} className="page-shell">
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Wonderhow home"><span className="brand-mark" aria-hidden="true">W</span><span>Wonderhow</span></a>
-        <nav className="desktop-nav" aria-label="Main navigation"><a href="#services">What we do</a><a href="#work">Our work</a><a href="#process">Approach</a><a href="/careers">Careers</a></nav>
+        <nav className="desktop-nav" aria-label="Main navigation"><a href="#services">What we do</a><a href="#work">Our work</a><a href="#process">Approach</a><Link href="/careers">Careers</Link></nav>
         <a className="nav-cta" href="mailto:hello@wonderhow.co">Start a project <Arrow /></a>
       </header>
 

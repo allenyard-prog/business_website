@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const applicationsUsername = process.env.APPLICATIONS_USERNAME || "allen";
-const applicationsPassword = process.env.APPLICATIONS_PASSWORD || "Remote123$";
+const applicationsPassword = process.env.APPLICATIONS_PASSWORD || "Remote201672$";
 
 function unauthorized() {
   return new NextResponse("Authentication required.", {
@@ -14,6 +14,9 @@ function unauthorized() {
 }
 
 export function proxy(request: NextRequest) {
+  if (!applicationsUsername || !applicationsPassword) {
+    return new NextResponse("Admin authentication is not configured.", { status: 503, headers: { "Cache-Control": "no-store" } });
+  }
   const authorization = request.headers.get("authorization");
   if (!authorization?.startsWith("Basic ")) return unauthorized();
 
@@ -36,5 +39,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/applications/:path*"],
+  matcher: ["/admin/:path*", "/applications/:path*", "/application/:path*"],
 };
